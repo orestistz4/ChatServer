@@ -62,6 +62,7 @@ namespace ChatServer.Controllers
 
             Console.WriteLine("");
             _hubContext.Clients.All.SendAsync("ReceiveObject",obj);
+            
             return Ok();
 
 
@@ -103,7 +104,15 @@ namespace ChatServer.Controllers
         {
             try
             {
-                await _roomRepository.AddRoom(roomName);
+               var result=  await _roomRepository.AddRoom(roomName);
+                if (result)
+                {
+                    //tote to room ftiaxthke!!!!
+                }
+                else
+                {
+                    //to room yparxei hdh den mporei na ftia3ei allo
+                }
                 return Ok();
             }
             catch(Exception ex)
@@ -127,6 +136,31 @@ namespace ChatServer.Controllers
             }
         }
 
+
+        [Route("joinroom")]
+        [HttpPost]
+        public async Task<ActionResult> JoinRoom([FromBody]string roomName)
+        {
+            try
+            {
+                var result = await _roomRepository.CheckRoom(roomName);
+                if (result)
+                {
+                    //o xrhsths ekane join
+                    return Ok(true);
+                }
+                else
+                {
+                    //den yparxei to room
+                    return Ok(false);
+                }
+                //return Ok();
+            }
+            catch (Exception ex)
+            {
+                return NotFound();
+            }
+        }
 
 
 

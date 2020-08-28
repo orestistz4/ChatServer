@@ -18,7 +18,7 @@ namespace ChatServer.Models.Rooms
 
 		public AppDbContext Context { get; }
 
-		public async Task AddRoom(string roomName)
+		public async Task<bool> AddRoom(string roomName)
 		{
 			var exists = Context.Rooms.FirstOrDefault(c=>c.Room==roomName);
 			if (exists == null)
@@ -27,6 +27,11 @@ namespace ChatServer.Models.Rooms
 				await Context.Rooms.AddAsync(new GroupRoom() { Room=roomName});
 
 				await Context.SaveChangesAsync();
+				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
 

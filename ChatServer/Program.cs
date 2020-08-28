@@ -18,7 +18,11 @@ namespace ChatServer
 		}
 
 		public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-			WebHost.CreateDefaultBuilder(args)
-				.UseStartup<Startup>();
+	//WebHost.CreateDefaultBuilder(args)
+	//.UseStartup<Startup>();
+	WebHost.CreateDefaultBuilder(args)
+		   .CaptureStartupErrors(true) // the default
+		   .UseSetting("detailedErrors", "true")
+		   .UseStartup<Startup>();
 	}
 }

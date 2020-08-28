@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ChatServer.Hubs;
 using ChatServer.Models;
 using ChatServer.Models.Rooms;
+using ChatServer.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,7 +23,7 @@ namespace ChatServer
 
 
 
-		private IConfiguration _config;
+		public IConfiguration _config { get; }
 		public Startup(IConfiguration config)
 		{
 			_config = config;
@@ -57,8 +58,11 @@ namespace ChatServer
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 		{
 
-		
-
+			//set the globa service
+			GlobalService.ServiceProvider = app.ApplicationServices;
+			GlobalService.Configuration = _config;
+			GlobalService.UpdateDatabase();
+			//
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
