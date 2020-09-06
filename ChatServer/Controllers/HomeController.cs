@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ChatServer.Hubs;
 using ChatServer.Models;
 using ChatServer.Models.Rooms;
+using ChatServer.Models.UserRoom;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -19,11 +20,13 @@ namespace ChatServer.Controllers
 
         private IHubContext<MessageHub> _hubContext;
         private IRoom _roomRepository;
+        private IUserRooms _userRoomsRepository;
 
-        public HomeController(IHubContext<MessageHub> hubContext,IRoom roomRepository)
+        public HomeController(IHubContext<MessageHub> hubContext,IRoom roomRepository,IUserRooms userRoomRepository)
         {
             _hubContext = hubContext;
             _roomRepository = roomRepository;
+            _userRoomsRepository = userRoomRepository;
         }
 
        
@@ -108,12 +111,14 @@ namespace ChatServer.Controllers
                 if (result)
                 {
                     //tote to room ftiaxthke!!!!
+                    return Ok("Room");
                 }
                 else
                 {
                     //to room yparxei hdh den mporei na ftia3ei allo
+                    return NotFound("Room Already exxists");
                 }
-                return Ok();
+                
             }
             catch(Exception ex)
             {
@@ -128,11 +133,11 @@ namespace ChatServer.Controllers
             try
             {
                 await _roomRepository.DeleteRoom(roomName);
-                return Ok();
+                return Ok("Room deleted");
             }
             catch (Exception ex)
             {
-                return NotFound();
+                return NotFound("Please Check your Internet conneciton...");
             }
         }
 
@@ -158,10 +163,55 @@ namespace ChatServer.Controllers
             }
             catch (Exception ex)
             {
-                return NotFound();
+                return NotFound(null);
             }
         }
 
+
+        [Route("createuserroom")]
+        [HttpPost]
+        public async Task<ActionResult> CreateUserRoom([FromBody]UserRooms room) {
+
+
+            try
+            {
+
+             await _userRoomsRepository.AddRoom(room.Email,room.Room);
+                return Ok(new ResponseModel() { Response="Room Created"});
+
+            }
+            catch (Exception ex) {
+
+
+                throw new Exception(ex.Message);
+
+            
+            }
+
+        
+        }
+
+        [Route("getuserrooms")]
+        [HttpPost]
+        public async Task<ActionResult> GetUserRooms([FromBody] string email) {
+
+
+
+            try {
+
+                var list1 = await _userRoomsRepository.GetUserRooms(email);
+                return Ok(list1);
+            
+            }
+            catch(Exception ex)
+            {
+
+                throw new Exception("sth happend...");
+
+            }
+
+        
+        }
 
 
 

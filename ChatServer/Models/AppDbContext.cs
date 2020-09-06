@@ -20,6 +20,7 @@ namespace ChatServer.Models
 
 		public DbSet<Groups> Groups { get; set; }
 		public DbSet<GroupRoom> Rooms { get; set; }
+		public DbSet<UserRooms> UserRooms { get; set; }
 		public void Migration()
 		{
 			Database.Migrate();

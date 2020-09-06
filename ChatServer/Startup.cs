@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ChatServer.Hubs;
 using ChatServer.Models;
 using ChatServer.Models.Rooms;
+using ChatServer.Models.UserRoom;
 using ChatServer.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -50,6 +51,7 @@ namespace ChatServer
 
 			services.AddMvc();
 			services.AddTransient<IRoom,RoomHandler>();
+			services.AddTransient<IUserRooms,SQLUserRooms>();
 			services.AddSignalR();
 
 		}

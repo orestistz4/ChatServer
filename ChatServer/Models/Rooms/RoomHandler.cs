@@ -1,4 +1,5 @@
 ﻿using ChatServer.Models.UserAccount;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace ChatServer.Models.Rooms
 		//tsekarei an yparxei to room
 		public async Task<bool> CheckRoom(string roomName)
 		{
-			var exists = Context.Rooms.FirstOrDefault(c => c.Room == roomName);
+			var exists =await Context.Rooms.FirstOrDefaultAsync(c => c.Room == roomName);
 			if (exists != null)
 			{
 				//yparxei to room
