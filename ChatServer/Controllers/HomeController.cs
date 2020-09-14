@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using ChatServer.Hubs;
 using ChatServer.Models;
 using ChatServer.Models.Rooms;
+using ChatServer.Models.SaveDatsFromHub;
 using ChatServer.Models.UserRoom;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
 namespace ChatServer.Controllers
@@ -21,12 +23,16 @@ namespace ChatServer.Controllers
         private IHubContext<MessageHub> _hubContext;
         private IRoom _roomRepository;
         private IUserRooms _userRoomsRepository;
+        private AppDbContext context;
+        private IGroupsMessagesSave saveMessage;
 
-        public HomeController(IHubContext<MessageHub> hubContext,IRoom roomRepository,IUserRooms userRoomRepository)
+        public HomeController(IHubContext<MessageHub> hubContext,IRoom roomRepository,IUserRooms userRoomRepository,AppDbContext Context, IGroupsMessagesSave SaveMessage)
         {
             _hubContext = hubContext;
             _roomRepository = roomRepository;
             _userRoomsRepository = userRoomRepository;
+            context = Context;
+            saveMessage = SaveMessage;
         }
 
        
@@ -35,7 +41,7 @@ namespace ChatServer.Controllers
         public ActionResult Get()
         {
             //messageHub = new MessageHub();
-            _hubContext.Clients.All.SendAsync("ReceiveMessage","sup");
+            _hubContext.Clients.All.SendAsync("AppearPage", "sup");
 
 
 
@@ -76,7 +82,7 @@ namespace ChatServer.Controllers
 
         [Route("sendmessage")]
         [HttpPost]
-        public ActionResult SendMessage([FromBody]MessageModel obj)
+        public async Task<ActionResult> SendMessage([FromBody]MessageModel obj)
         {
 
             Console.WriteLine("");
@@ -87,12 +93,18 @@ namespace ChatServer.Controllers
 
                 
 
-                _hubContext.Clients.Group(obj.Group).SendAsync(obj.Group,obj);
+                await _hubContext.Clients.Group(obj.Group).SendAsync(obj.Group,obj);
+               // await saveMessage.SaveMessage(obj,obj.Group);
+
+                await context.Groups.AddAsync(new Groups() { GroupName=obj.Group,Date=DateTime.Now,Message=obj.Message,Username=obj.Username});
+                var list1 = await context.Groups.ToListAsync();
+                await context.SaveChangesAsync();
                
-                return Ok();
-            }catch(Exception ex)
+                return Ok(new ResponseModel() { Response="Ok"});
+            }
+            catch(Exception ex)
             {
-                return NotFound();
+                return NotFound(new ResponseModel() { Response = "Not Ok" });
             }
 
             //_hubContext.Clients.All.SendAsync("ReceiveObject", obj);
@@ -191,6 +203,32 @@ namespace ChatServer.Controllers
         
         }
 
+
+        [Route("deleteuserroom")]
+        [HttpPost]
+        public async Task<ActionResult> DeleteUserRoom([FromBody]UserRooms room)
+        {
+
+
+            try
+            {
+
+                await _userRoomsRepository.DeleteUserRoom(room.Email, room.Room);
+                return Ok(new ResponseModel() { Response = "Room Deleted" });
+
+            }
+            catch (Exception ex)
+            {
+
+
+                throw new Exception(ex.Message);
+
+
+            }
+
+
+        }
+
         [Route("getuserrooms")]
         [HttpPost]
         public async Task<ActionResult> GetUserRooms([FromBody] string email) {
@@ -211,6 +249,31 @@ namespace ChatServer.Controllers
             }
 
         
+        }
+
+
+        [Route("getgroupmessages")]
+        [HttpPost]
+        public async Task<ActionResult> GetGroupMessages([FromBody] string room)
+        {
+
+
+
+            try
+            {
+                var roomMessages = await context.Groups.Where(c => c.GroupName == room).ToListAsync();
+                
+                return Ok(roomMessages);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("sth happend...");
+
+            }
+
+
         }
 
 

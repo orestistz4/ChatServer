@@ -10,6 +10,8 @@ namespace ChatServer.Models.UserRoom
 
 		Task AddRoom(string email,string room);
 		Task<List<UserRooms>> GetUserRooms(string email);
+		//delete user room
+		Task DeleteUserRoom(string email, string room);
 
 	}
 }

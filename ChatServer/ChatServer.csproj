@@ -5,6 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200910075457_IdFix.cs" />
+    <Compile Remove="Migrations\20200910075457_IdFix.Designer.cs" />
+    <Compile Remove="Migrations\20200910080559_LastFixTest.cs" />
+    <Compile Remove="Migrations\20200910080559_LastFixTest.Designer.cs" />
+    <Compile Remove="Migrations\20200910080805_LastFixTestt.cs" />
+    <Compile Remove="Migrations\20200910080805_LastFixTestt.Designer.cs" />
+    <Compile Remove="Migrations\20200910082422_shj.cs" />
+    <Compile Remove="Migrations\20200910082422_shj.Designer.cs" />
+    <Compile Remove="Migrations\20200914095309_asdf.cs" />
+    <Compile Remove="Migrations\20200914095309_asdf.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

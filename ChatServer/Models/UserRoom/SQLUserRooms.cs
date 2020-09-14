@@ -57,6 +57,27 @@ namespace ChatServer.Models.UserRoom {
 			}
 	}
 
+		public async Task DeleteUserRoom(string email, string groupRoom)
+		{
+			try
+			{
+				var room = await context.UserRooms.Where(c => c.Email == email && c.Room == groupRoom).FirstOrDefaultAsync();
+				if (room != null)
+				{
+					context.UserRooms.Remove(room);
+					await context.SaveChangesAsync();
+				}
+				else
+				{
+					throw new Exception("Couldnt delete room please try again later...");
+				}
+			}
+			catch(Exception ex)
+			{
+				throw new Exception(ex.Message);
+			}
+		}
+
 		public async Task<List<UserRooms>> GetUserRooms(string email)
 		{
 

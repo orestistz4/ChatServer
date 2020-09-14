@@ -1,4 +1,5 @@
 ﻿using ChatServer.Models;
+using ChatServer.Models.SaveDatsFromHub;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace ChatServer.Hubs
 {
 	public class MessageHub:Hub
 	{
+
+
 
 
 		public event EventHandler<string> fireEvent1;
@@ -32,6 +35,8 @@ namespace ChatServer.Hubs
 		public async Task SendToGroup(string roomName,MessageModel message)
 		{
 			await Clients.Group(roomName).SendAsync(roomName, message);
+			
+			//na to apo8hkeuw sto database!!!!
 		}
 
 

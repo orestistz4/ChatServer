@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace ChatServer.Models
 		public string GroupName { get; set; }
 		public string Message { get; set; }
 		public string Username { get; set; }
-
+		public DateTime Date { get; set; }
 
 	}
 }
